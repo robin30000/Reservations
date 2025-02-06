@@ -63,7 +63,8 @@ Durante el desarrollo, se presentaron algunas complicaciones:
 5. Ejecutar Seeders
    Para tener algunos datos de prueba en la base de datos, ejecuta los siguientes comandos:
    ```bash
-    php artisan db:seed
+    php artisan db:seed --class=UserSeeder
+    php artisan db:seed --class:SiteSeeder
 
 6. Inicia el servidor:
    ```bash
