@@ -60,11 +60,16 @@ Durante el desarrollo, se presentaron algunas complicaciones:
    ```bash
    php artisan migrate
    
-5. Inicia el servidor:
+5. Ejecutar Seeders
+   Para tener algunos datos de prueba en la base de datos, ejecuta los siguientes comandos:
+   ```bash
+    php artisan db:seed
+
+6. Inicia el servidor:
    ```bash
    php artisan serve
    
-6. Accede a la API en http://localhost:8000.
+7. Accede a la API en http://localhost:8000.
 
 # Consultas SQL
 
