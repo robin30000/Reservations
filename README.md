@@ -1,66 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Reservation System API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción
+Este proyecto proporciona una API para gestionar reservas de usuarios en sitios. Permite crear, consultar y administrar las reservas, garantizando que los usuarios no realicen reservas duplicadas ni con fechas pasadas.
 
-## About Laravel
+## Técnicas Utilizadas
+- **Lenguaje**: PHP 8.x
+- **Framework**: Laravel 11
+- **Base de datos**: MySQL
+- **Autenticación**: No implementada directamente (se asume que el usuario está autenticado)
+- **Validación**: Uso del sistema de validaciones de Laravel para garantizar que los datos sean correctos antes de ser procesados.
+- **Optimización**: Uso de índices en las consultas SQL y claves foráneas para mantener la integridad de los datos.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Arquitectura
+La arquitectura del proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)**:
+1. **Modelo (Model)**: Representa las entidades de negocio (Usuarios, Sitios, Reservas) y se encarga de interactuar con la base de datos.
+2. **Vista (View)**: No está implementada en este proyecto, ya que es una API RESTful que devuelve datos en formato JSON.
+3. **Controlador (Controller)**: Maneja las solicitudes HTTP, valida los datos y llama a los servicios correspondientes para crear las reservas.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Estructura del Proyecto:**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+**Decisiones Técnicas Tomadas:**
+- La API utiliza **Laravel** por su robustez y facilidad para manejar solicitudes HTTP.
+- Las **relaciones Eloquent** son utilizadas para gestionar las relaciones entre usuarios, sitios y reservas.
+- Las reservas se gestionan con una tabla **reservations**, y se aplican **restricciones de unicidad** (una reserva por usuario en una fecha específica) para evitar duplicados.
+- Se optó por **validar las fechas de inicio y fin** antes de procesar la solicitud para evitar errores lógicos y mejorar la calidad de los datos.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Elementos Clave
+- **Validaciones**: Se validan los parámetros de entrada para asegurarse de que el `user_id` y `site_id` existen, que las fechas sean futuras y que la fecha de fin sea posterior a la fecha de inicio.
+- **Seguridad**: Aunque no se implementa autenticación en esta versión, se recomienda agregarla para proteger las rutas de la API.
+- **Rendimiento**: Se optimizan las consultas SQL mediante **índices** en las tablas de reservas y claves foráneas para garantizar la integridad de los datos y mejorar la velocidad de las consultas.
+- **Optimización**: Se utiliza la función `load` de Eloquent para evitar consultas innecesarias al obtener los datos relacionados con las reservas (usuario y sitio).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Complicaciones Encontradas
+Durante el desarrollo, se presentaron algunas complicaciones:
+1. **Gestión de reservas superpuestas**: Fue necesario implementar una validación para asegurarse de que no existan reservas que se solapen en el mismo sitio y para el mismo usuario. Esto requirió la creación de consultas SQL personalizadas.
+2. **Fechas futuras**: Implementar la validación para que las reservas solo puedan hacerse para fechas futuras fue más complicado de lo esperado debido a la conversión y comparación de formatos de fecha.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Soluciones**:
+- Se implementó una función que comprueba las reservas superpuestas utilizando un rango de fechas.
+- Se utilizó la validación de Laravel para asegurarse de que las fechas de inicio y fin sean correctas.
 
-## Laravel Sponsors
+## Posibles Mejoras
+1. **Autenticación**: Se podría agregar autenticación basada en JWT para asegurar que los usuarios estén autenticados antes de hacer una reserva.
+2. **Gestión de cancelaciones**: Implementar una funcionalidad para cancelar reservas y evitar que se acumulen reservas innecesarias.
+3. **Paginación en las respuestas**: Si las reservas se vuelven muy grandes, implementar paginación en las respuestas para mejorar el rendimiento y la usabilidad.
+4. **Historial de reservas**: Añadir una función para que los usuarios puedan ver un historial completo de sus reservas.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalación y Ejecución
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/usuario/reservation-api.git
+2. Instala las dependencias:
+   ```bash
+   composer install
+   
+3. Configura la base de datos en el archivo .env.
+4. Ejecuta las migraciones:
+   ```bash
+   php artisan migrate
+   
+5. Inicia el servidor:
+   ```bash
+   php artisan serve
+   
+6. Accede a la API en http://localhost:8000.
 
-### Premium Partners
+# Consultas SQL
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+A continuación, se presentan algunas consultas SQL clave para obtener información relevante de la base de datos en el sistema de reservas.
 
-## Contributing
+1. Sitios que no han sido reservados
+Esta consulta devuelve todos los sitios que no tienen ninguna reserva asociada.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```sql
+SELECT s.id, s.name 
+FROM sites s
+LEFT JOIN reservations r ON s.id = r.site_id
+WHERE r.id IS NULL;
 
-## Code of Conduct
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Listado de reservas por usuario y sitio
+Esta consulta devuelve todos los sitios que no tienen ninguna reserva asociada.
 
-## Security Vulnerabilities
+```sql
+SELECT
+    r.id AS reservation_id,
+    u.id AS user_id,
+    u.name AS user_name,
+    s.id AS site_id,
+    s.name AS site_name,
+    r.start_date,
+    r.end_date
+FROM reservations r
+         JOIN users u ON r.user_id = u.id
+         JOIN sites s ON r.site_id = s.id
+ORDER BY r.start_date DESC;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
