@@ -105,3 +105,5 @@ ORDER BY r.start_date DESC;
 
 
 ```
+# url documentacion Swagger:
+http://127.0.0.1:8000/api/documentation
